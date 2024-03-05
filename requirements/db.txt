@@ -1,0 +1,104 @@
+# users
+  - user_id
+  - name
+  - username
+  - email
+  - passwrd
+  - phone_number
+  - website_url
+  - birthday
+  - gender
+  - country
+  - profile_pic
+  - blood_group_id
+  - last_donated
+  - status (active, inActive (suspended))
+  - is_admin
+
+# posts
+  - post_id
+  - user_id
+  - blood_group_id
+  - blood_process_id
+  - post_type (donation, request)
+  - post_blood_unit (ml)
+  - post_city
+  - post_location (overrides city & country)
+  - post_status (pending, approved, rejected)
+  - post_created_at
+  - post_updated_at
+
+
+# reports
+ - report_id
+ - report_reason ("spam", "harmful misinformation", "impersonation, scam, or fraud")
+ - post_id
+
+# blood_groups
+  - group_id
+  - group_name (A+, A-, B+, B-, AB+, AB-, O+, O-)
+
+# disease_types
+  - d_type_id
+  - d_type_name 
+
+# blood_processes
+  - process_id
+  - process_name (whole_blood, power_red, platelet_apheresis)
+
+# user_posts
+  - user_id
+  - post_id
+
+# user_diseases
+  - user_id
+  - disease_id
+
+========================================================================================================
+# to do
+# request posts
+- if a user selects one of the confirmed diseases, the post automatically gets rejected
+- if a user selects "other" and adds in a different disease name, the post is marked as pending and an admin has to approve it
+- if a user doesn't select any diseases, the post gets listed automatically
+
+# donation posts
+- if a user selects one of the confirmed diseases, the post automatically gets rejected
+- if a user selects "other" and adds in a different disease name, the post is marked as pending and an admin has to approve it
+- if a user doesn't select any diseases, the post gets listed automatically
+
+- donate & send request buttons or live chat
+
+# notes
+- whole blood donations:  1 donation post every 56 days 
+- power red donations:    1 donation post every 112 days
+- platelet apheresis:     1 donation post every 7 days
+- show a colour or message on each post to show if it's compatible with the user or not
+- users between 18 and 60 years of age can donate
+
+# diseases (need to update)
+- HIV/AIDS
+- Hepatitis B/C
+- Syphilis
+- Malaria
+- Chagas disease
+- Creutzfeldt-Jakob Disease (CJD)
+- Variant Creutzfeldt-Jakob Disease (vCJD)
+- Babesiosis
+- Human T-lymphotropic virus (HTLV)
+- West Nile Virus (WNV)
+- Brucellosis
+- Leishmaniasis
+- Trypanosomiasis (including Chagas disease and African trypanosomiasis)
+- Zika virus infection
+- Ebola virus disease
+- Dengue fever
+- SARS-CoV-2 (COVID-19) infection
+
+========================================================================================================
+# for later
+# comments
+  - comment_id
+  - comment_content
+  - post_id
+  - replies ??
+  - user_id (must be logged in)
