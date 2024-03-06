@@ -1,89 +1,101 @@
+CREATE DATABASE blood_bank;
+
 CREATE TABLE users (
-    user_id INT(16) AUTO_INCREMENT,
-    name VARCHAR(50),
+    user_id INT AUTO_INCREMENT,
     username VARCHAR(50) UNIQUE,
+    name VARCHAR(50),
     email VARCHAR(100) UNIQUE,
     passwrd VARCHAR(100),
     phone_number VARCHAR(20),
-    website_url VARCHAR(80),
-    birthday TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     gender VARCHAR(10),
     country VARCHAR(60),
+    birthday TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
     profile_pic VARCHAR(250),
-    blood_group_id INT(16),
-    last_donated TIMESTAMP,
-    status BOOLEAN DEFAULT TRUE,
+    website_url VARCHAR(80),
+
+    usr_status BOOLEAN,
+    acc_status BOOLEAN DEFAULT TRUE,
+    blood_group_id INT,
     is_admin BOOLEAN DEFAULT FALSE,
 
+    last_donated TIMESTAMP,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
+
     PRIMARY KEY (user_id),
-    FOREIGN KEY (blood_group_id) REFERENCES blood_groups(group_id)
+    FOREIGN KEY (blood_group_id) REFERENCES blood_groups(group_id),
+    FOREIGN KEY (usr_status) REFERENCES status(status_id),
+    FOREIGN KEY (acc_status) REFERENCES status(status_id)
 );
 
-
 CREATE TABLE posts (
-    post_id INT(16) AUTO_INCREMENT,
-    user_id INT(16),
-    blood_group_id INT(16),
-    blood_process_id INT(16),
+    post_id INT AUTO_INCREMENT,
+    user_id INT,
+    post_status INT,
+    blood_group_id INT,
+    blood_process_id INT,
     post_type VARCHAR(10),
-    post_blood_unit INT(16),
+    post_blood_unit INT,
     post_city VARCHAR(50),
     post_location VARCHAR(125),
-    post_status VARCHAR(15) DEFAULT 'pending',
     post_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     post_updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (post_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (post_status) REFERENCES status(status_id),
     FOREIGN KEY (blood_group_id) REFERENCES blood_groups(group_id),
     FOREIGN KEY (blood_process_id) REFERENCES blood_processes(process_id)
 );
 
+CREATE TABLE status (
+    status_id  INT AUTO_INCREMENT,
+    status_type VARCHAR(20),
+    PRIMARY KEY (status_id)
+);
 
 CREATE TABLE reports(
-    report_id INT(16) AUTO_INCREMENT,
+    report_id INT AUTO_INCREMENT,
     report_reason VARCHAR(40),
-    post_id INT(16),
+    post_id INT,
 
     PRIMARY KEY (report_id),
     FOREIGN KEY (post_id) REFERENCES posts(post_id)
 );
 
-
 CREATE TABLE blood_groups (
-    group_id INT(16) AUTO_INCREMENT,
+    group_id INT AUTO_INCREMENT,
     group_name VARCHAR(3),
 
     PRIMARY KEY (group_id)
 );
 
 CREATE TABLE disease_types (
-    d_type_id INT(16) AUTO_INCREMENT,
+    d_type_id INT AUTO_INCREMENT,
     d_type_name VARCHAR(50),
 
     PRIMARY KEY (d_type_id)
 );
 
 CREATE TABLE blood_processes (
-    process_id INT(16) AUTO_INCREMENT,
+    process_id INT AUTO_INCREMENT,
     process_name VARCHAR(30),
 
     PRIMARY KEY (process_id)
 );
 
-
 CREATE TABLE user_posts (
-    user_id INT(16),
-    post_id INT(16),
+    user_id INT,
+    post_id INT,
 
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (post_id) REFERENCES posts(post_id)
 );
 
-
 CREATE TABLE user_diseases (
-    user_id INT(16),
-    disease_id INT(16),
+    user_id INT,
+    disease_id INT,
     
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (disease_id) REFERENCES disease_types(d_type_id)

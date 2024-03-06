@@ -1,64 +1,92 @@
 <?php
-  function asset($path) {
-      $dir = '/bt3/project1/';
-      if(!isset($path)){
-        return $dir;
-      }
-      return $dir . $path;
-  }
+  include 'config.php';
+  include_once 'helpers/helpers.php';
+  
+  define('LAYOUT_PATH', '/bt3/bloodX/admin/');
+  $_SESSION['LAYOUT_PATH'] = '/bt3/bloodX/admin/';
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><?php echo $pageTitle ?? 'Blood X'; ?> </title>
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+  <title>Blood X</title>
   
-    <!-- CSS IMPORT -->
-    <link rel="stylesheet" href="<?php echo asset('css/style.css'); ?>" />
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="<?php echo asset('css/bootstrap.css'); ?>" />
-    
-    <!-- Others -->
-    <link rel="stylesheet" href="<?php echo asset('css/virtual-select.min.css');?>" />
-    <link rel="stylesheet" href="<?php echo asset('fonts/css/font-awesome.css'); ?>">
+  <!-- General CSS Files -->
+  <link rel="stylesheet" href="<?php echo asset('assets/modules/bootstrap/css/bootstrap.css');?>">
+  <link rel="stylesheet" href="<?php echo asset('assets/modules/fontawesome/css/all.min.css');?>">
+
+  <!-- CSS Libraries -->
+  <link rel="stylesheet" href="<?php echo asset('assets/modules/jqvmap/dist/jqvmap.min.css'); ?>">
+  <link rel="stylesheet" href="<?php echo asset('assets/modules/summernote/summernote-bs4.css'); ?>">
+  <link rel="stylesheet" href="<?php echo asset('assets/modules/owlcarousel2/dist/assets/owl.carousel.min.css'); ?>">
+  <link rel="stylesheet" href="<?php echo asset('assets/modules/owlcarousel2/dist/assets/owl.theme.default.min.css'); ?>">
+
+  <!-- Template CSS -->
+  <link rel="stylesheet" href="<?php echo asset('assets/css/style.css'); ?>">
+  <link rel="stylesheet" href="<?php echo asset('assets/css/components.css'); ?>">
+
+  <!-- Start GA -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-94034622-3"></script>
   
-  </head>
-  <body>
-    <?php 
-      include('header.php'); 
-    ?>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
 
-    <main class="my-3">
-        <?php echo $content; ?>
-    </main>
+    gtag('config', 'UA-94034622-3');
+  </script>
 
-    <?php 
-      include('footer.php'); 
-    ?> 
+  <!-- /END GA -->
+</head>
 
-    <script type="text/javascript" src="<?php echo  asset('js/script.js'); ?>"></script>
-    <script src="<?php echo asset('js/virtual-select.min.js'); ?>"></script>
-    <script src="<?php echo asset('js/bootstrap.min.js'); ?>"></script>
+<body>
+  <div id="app">
+    <div class="main-wrapper main-wrapper-1">
+     
+      <!-- NAVBAR -->
+        <?php include_once('navbar.php'); ?>
+      <!-- // NAVBAR // -->
 
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+      <!-- SIDEBAR -->
+        <?php include_once('sidebar.php'); ?>
+      <!-- // SIDEBAR // -->
 
-    <!-- TO MAKE DESGIN FOR SELECT TAG  -->
-      <script>
-        // VirtualSelect.init({
-        //   ele: '#nationalitiesSelect'
-        // });
-      </script>
-    <!-- // TO MAKE DESGIN FOR SELECT TAG //  -->
+      <!-- Main Content -->
+        <main class="my-3 main-content">
+          <?= $content; ?> 
+        </main>  
+      <!-- // Main Content // -->
 
-    <!-- FLASH MSG IS GOING HERE -->
-      <div class="position-absolute" style="bottom: 2%; right: 2%;">
-        <?php // include('flash.php'); ?>
-      </div>
-    <!-- // FLASH MSG IS GOING HERE // -->
+      <footer class="main-footer">
+        <?php include_once('footer.php'); ?>
+      </footer>
+    </div>
+  </div>
+  
+  <!-- General JS Scripts -->
+  <script src="<?php echo asset('assets/modules/jquery.min.js'); ?>"></script>
+  <script src="<?php echo asset('assets/modules/popper.js'); ?>"></script>
+  <script src="<?php echo asset('assets/modules/tooltip.js'); ?>"></script>
+  <script src="<?php echo asset('assets/modules/bootstrap/js/bootstrap.min.js'); ?>"></script>
+  <script src="<?php echo asset('assets/modules/nicescroll/jquery.nicescroll.min.js'); ?>"></script>
+  <script src="<?php echo asset('assets/modules/moment.min.js'); ?>"></script>
+  <script src="<?php echo asset('assets/js/stisla.js'); ?>"></script>
+  
+  <!-- JS Libraies -->
+  <script src="<?php echo asset('assets/modules/jquery.sparkline.min.js'); ?>"></script>
+  <script src="<?php echo asset('assets/modules/chart.min.js'); ?>"></script>
+  <script src="<?php echo asset('assets/modules/owlcarousel2/dist/owl.carousel.min.js'); ?>"></script>
+  <script src="<?php echo asset('assets/modules/summernote/summernote-bs4.js'); ?>"></script>
+  <script src="<?php echo asset('assets/modules/chocolat/dist/js/jquery.chocolat.min.js'); ?>"></script>
 
-  </body>
+  <!-- Page Specific JS File -->
+  <script src="<?php echo asset('assets/js/page/index.js'); ?>"></script>
+
+  <!-- Template JS File -->
+  <script src="<?php echo asset('assets/js/scripts.js'); ?>"></script>
+  <script src="<?php echo asset('assets/js/custom.js'); ?>"></script>
+</body>
 </html>

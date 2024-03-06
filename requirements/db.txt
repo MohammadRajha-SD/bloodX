@@ -94,6 +94,19 @@
 - Dengue fever
 - SARS-CoV-2 (COVID-19) infection
 
+
+#status 
+  -online--user
+  -offline--user
+  
+  -active--acc-post
+  -inactive--post
+  
+  -suspended-acc
+  -rejected-post
+  -approved-post
+  -pending-post
+  
 ========================================================================================================
 # for later
 # comments
