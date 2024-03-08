@@ -1,20 +1,47 @@
 <?php
-    include '../config.php';
-    $pageTitle = "Donors";
-    ob_start();
+    include '../../config.php';
+    include '../helpers/helpers.php';
+    $pageTitle = "Users";
 
+    ob_start();
     session_start();
 
-    $query = "SELECT * FROM users ORDER BY user_id"; 
+    $query = 'SELECT COUNT(*) as counter_user FROM users';
+
+    $rows_per_page = 2; 
+    $stmt = $conn->prepare($query); 
+    $stmt->execute(); 
+    $counter = $stmt->fetchColumn();
+    $pages = ceil($counter / $rows_per_page);
+
+    $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
+    $start = ($current_page - 1) * $rows_per_page;
+
+    $users_query = 'SELECT users.*, blood_groups.*, statuses.*, countries.* FROM users
+    INNER JOIN blood_groups ON users.blood_group_id = blood_groups.group_id  
+    INNER JOIN statuses ON users.acc_status = statuses.status_id
+    INNER JOIN countries ON users.country_id = countries.country_id  ORDER BY user_id DESC LIMIT ?, ?';
+  
+    try{
+        $count = 0;
+        $stmt = $conn->prepare($users_query); 
+        $stmt->execute([$start, $rows_per_page]); 
+        $result = $stmt->fetchAll();
+
+    }catch(PDOException $e){
+        echo $e->getMessage();
+    } 
 ?>
+
 <!-- TABLE FOR USERS -->
     <section class="section">
         <div class="section-header">
-            <h1>Donors Details</h1>
-        </div>
-
-        <div class="mb-3">
-            <a href="<?= '../'; ?>" class="btn btn-primary">Back</a>
+            <h1>Users </h1>
+            <div class="section-header-breadcrumb">
+              <div class="breadcrumb-item active"><a href="../">Dashboard</a></div>
+              <div class="breadcrumb-item"><a href="">Users</a></div>
+              <div class="breadcrumb-item">Users Details</div>
+            </div>
         </div>
 
         <div class="section-body">
@@ -22,10 +49,12 @@
                 <div class="col-12 ">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Donors </h4>
-                            <!-- <div class="card-header-action">
-                                <a href="create.php" class="btn btn-primary"><i class="fas fa-plus"></i> Create New</a>
-                            </div> -->
+                            <h4>Users Details</h4>
+                            <div class="card-header-action">
+                                <!-- ?pages=<?= $pages; ?> -->
+                                <a href="create.php" class="btn btn-danger"><i class="fas fa-plus"></i> Create New</a>
+                                <a href="<?= '../'; ?>" class="btn btn-primary">Back</a>
+                            </div>
                         </div>
 
                         <div class="card-body">
@@ -42,68 +71,64 @@
                                             <th>Status</th>
                                             <th>Admin</th>
                                             <th>Donated at</th>
-                                            <th>Action</th>
+                                            <th>Actions</th>
                                         </tr>
                                     </thead>
 
                                     <tbody>
                                         <?php
-                                        try{
+                                            if($counter > 0){
+                                                foreach ($result as $row) {
+                                                    $count += 1;
+                                                    $ad_query = "SELECT TIMESTAMPDIFF(YEAR, birthday, CURDATE()) AS age,  DATE_FORMAT(donated_at, '%b %m-%y') AS donated FROM users WHERE user_id = ?";
+                                                    $stmt = $conn->prepare($ad_query); 
+                                                    $stmt->execute([$row['user_id']]); 
+                                                    $result = $stmt->fetch();
+                                                    $age = $result['age'];
+                                                    $donated = $result['donated'];
 
-                                            $stmt = $conn->prepare($query); 
-                                            $stmt->execute(); 
-                                            $result = $stmt->fetchAll();
+                                                    echo '<tr>';
+                                                        echo '<td>'. $count . '</td>';
+                                                        echo '<td>'. $row["username"].'</td>';
+                                                        echo '<td>'. $row["group_name"].'</td>';
+                                                        echo '<td>'. $row["country_name"]. '</td>';
+                                                        echo '<td>'. ucwords($row["gender"]). '</td>';
+                                                        echo '<td>'. $age. '</td>';
+                                                        echo '<td>'. setStatus($row["status_type"]) .'</td>';
+                                                        echo '<td>'. setAdmin($row["is_admin"]) .'</td>';
+                                                        echo '<td>'. $donated . '</td>';
 
-                                            foreach ($result as $row) { 
-                                                echo "<tr>";
-                                                echo "<td>" . $row["user_id"]. "></td>";
-                                                echo "<td>" . $row["username"]. "></td>";
-                                                echo "<td>" . $row["email"]. "></td>";
-                                                echo "</tr>";
+                                                        echo '<td>';
+                                                            echo '<div class="dropdown d-inline">';
+                                                                echo '<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Manage</button>';
+                                                                // echo '<i class="ion-android-more-vertical" data-pack="android" data-tags="options, menu"></i>';
+                                                                echo '<div class="dropdown-menu">';
+                                                                echo '<a class="dropdown-item has-icon" href="#"><i class="fas fa-heart"></i>View</a>';
+                                                                echo '<a class="dropdown-item has-icon" href="edit.php?id='. $row['user_id'] .'"><i class="fas fa-edit"></i>Edit</a>';  
+                                                                echo '<a class="dropdown-item has-icon delete-item" href="delete.php" data-id="'. $row['user_id'].'"><i class="fa fa-trash"></i>Delete</a>';
+                                                                echo '</div>';
+                                                            echo '</div>';
+                                                        echo '</td>';
+                                                    echo "</tr>";
+                                                }
+                                            }else {
+                                                // If no records are found, display a message
+                                                echo '<tr><td class="text-center font-weight-bold" colspan="10">No records found</td></tr>';
                                             }
-                                        }catch(PDOException $e){
-                                            echo $e->getMessage();
-                                        }
-                                        
                                         ?>
-
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Mohammad</td>
-                                            <td>O+-</td>
-                                            <td>IDLIBY</td>
-                                            <td>GoodMAN</td>
-                                            <td>20</td>
-                                            <td><div class="badge badge-danger">Suspended</div></td>
-                                            <td><div class="badge badge-primary">Yes</div></td>
-                                            <td>201</td>
-                                            <td>
-                                                <div class="btn-group dropleft">
-                                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        <i class="fas fa-menu"></i>
-                                                        <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-                                                    </button>
-                                                    <div class="dropdown-menu dropleft">
-                                                        <a class="dropdown-item" href="#">Action</a>
-                                                        <a class="dropdown-item" href="#">Another action</a>
-                                                        <a class="dropdown-item" href="#">Something else here</a>
-                                                        <div class="dropdown-divider"></div>
-                                                        <a class="dropdown-item" href="#">Separated link</a>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
+                        </div>
+                        
+                        <div class="card-footer">
+                            <?php $counter > 0 ? include_once '../pagination.php' : ''; ?>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
+            </section>
 <!-- // TABLE FOR DONORS // -->
-
 <?php   
     $content = ob_get_clean(); 
     include('../layout.php');

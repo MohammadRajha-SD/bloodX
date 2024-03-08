@@ -2,7 +2,7 @@
     include '../../config.php'; 
     include '../helpers/helpers.php';
 
-    $pageTitle = "Users";
+    $pageTitle = "Supplicants";
     ob_start();
     session_start();
 
@@ -48,15 +48,38 @@
         header('Location: index.php');
     }
     
+   
+    /*
+        [0] => Array ( 
+            [user_id] => 1 
+            [username] => admin 
+            [name] => Admin User 
+            [email] => admin@gmail.com 
+            [passwrd] => 12341234 
+            [phone_number] => 76767676 
+            [gender] => male 
+            [country] => Lebanon 
+            [birthday] => 2005-03-06 16:30:21 
+            [profile_pic] => null 
+            [website_url] => null 
+            [usr_status] => 1 
+            [acc_status] => 3 
+            [blood_group_id] => 1 
+            [is_admin] => 1
+            [donated_at] => 2024-03-06 18:14:57 
+            [created_at] => null
+            [updated_at] => null
+        ) 
+    */
 ?>
 <!-- TABLE FOR USERS -->
     <section class="section">
         <div class="section-header">
-            <h1>Users</h1>
+            <h1>Supplicants</h1>
             <div class="section-header-breadcrumb">
               <div class="breadcrumb-item active"><a href="../">Dashboard</a></div>
-              <div class="breadcrumb-item"><a href="../users/">Users</a></div>
-              <div class="breadcrumb-item">Edit User</div>
+              <div class="breadcrumb-item"><a href="../supplicants/">Supplicants</a></div>
+              <div class="breadcrumb-item">Edit Supplicant</div>
             </div>
         </div>
 
@@ -65,9 +88,9 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                             <h4>Edit User : <?= ucwords($rd['username'])?> </h4>
+                             <h4>Edit Supplicant : <?= ucwords($rd['username'])?> </h4>
                              <div class="card-header-action">
-                                <a href="<?= '../users'; ?>" class="btn btn-primary">Back</a>
+                                <a href="<?= '../donors'; ?>" class="btn btn-primary">Back</a>
                             </div>
                         </div>
 

@@ -21,6 +21,10 @@
           '/bt3/bloodX/admin/supplicants/', 
           '/bt3/bloodX/admin/supplicants/index.php',
           '/bt3/bloodX/admin/supplicants/edit.php',
+          '/bt3/bloodX/admin/users/', 
+          '/bt3/bloodX/admin/users/index.php',
+          '/bt3/bloodX/admin/users/create.php', 
+          '/bt3/bloodX/admin/users/edit.php',
         ]); ?>">
           <a href="#" class="nav-link has-dropdown"><i class="fas fa-user"></i><span>Manage Users</span></a>
           <ul class="dropdown-menu ">

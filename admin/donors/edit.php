@@ -1,16 +1,87 @@
 <?php
+    include '../../config.php'; 
+    include '../helpers/helpers.php';
+
     $pageTitle = "Donors";
     ob_start();
     session_start();
+
+    if(isset($_GET['id']) && $_GET['id'] != ''){
+        try{
+            // Fetch users table from database
+            $user_id = $_GET['id'];
+            $query = <<<EOT
+                SELECT * FROM users WHERE user_id = ?
+            EOT;
+            $stmt = $conn->prepare($query); 
+            $stmt->execute([$user_id]); 
+            $rd = $stmt->fetch();
+
+            // Fetch blood groups table from database
+            $query = <<<EOT
+                SELECT * FROM blood_groups
+            EOT;
+            $stmt = $conn->prepare($query); 
+            $stmt->execute(); 
+            $blood_groups_rds= $stmt->fetchAll();
+
+            // Fetch countries table from database
+            $query = <<<EOT
+                SELECT * FROM countries
+            EOT;
+            $stmt = $conn->prepare($query); 
+            $stmt->execute(); 
+            $countries = $stmt->fetchAll();
+
+            // Fetch statuses table from database
+            $query = <<<EOT
+                SELECT * FROM statuses
+            EOT;
+            $stmt = $conn->prepare($query); 
+            $stmt->execute(); 
+            $statusesdb = $stmt->fetchAll();
+
+        }catch(PDOException $e){
+            echo $e->getMessage();
+        }
+    }else{
+        header('Location: index.php');
+    }
+    
+ 
+
+    /*
+        [0] => Array ( 
+            [user_id] => 1 
+            [username] => admin 
+            [name] => Admin User 
+            [email] => admin@gmail.com 
+            [passwrd] => 12341234 
+            [phone_number] => 76767676 
+            [gender] => male 
+            [country] => Lebanon 
+            [birthday] => 2005-03-06 16:30:21 
+            [profile_pic] => null 
+            [website_url] => null 
+            [usr_status] => 1 
+            [acc_status] => 3 
+            [blood_group_id] => 1 
+            [is_admin] => 1
+            [donated_at] => 2024-03-06 18:14:57 
+            [created_at] => null
+            [updated_at] => null
+        ) 
+    */
 ?>
 <!-- TABLE FOR USERS -->
     <section class="section">
         <div class="section-header">
-            <h1>Edit Donor</h1>
-        </div>
-
-        <div class="mb-3">
-            <a href="<?= '../'; ?>" class="btn btn-primary">Back</a>
+            <h1>Donors</h1>
+            <div class="section-header-breadcrumb">
+              <div class="breadcrumb-item active"><a href="../">Dashboard</a></div>
+              <div class="breadcrumb-item"><a href="../donors/">Donors</a></div>
+              <div class="breadcrumb-item">Edit Donor</div>
+            </div>
         </div>
 
         <div class="section-body">
@@ -18,27 +89,33 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Donors </h4>
+                             <h4>Edit Donor : <?= ucwords($rd['username'])?> </h4>
+                             <div class="card-header-action">
+                                <!-- <a href="create.php" class="btn btn-primary"><i class="fas fa-plus"></i> Create New</a> -->
+                                <a href="<?= '../donors'; ?>" class="btn btn-primary">Back</a>
+                            </div>
                         </div>
 
                         <div class="card-body">
-                            <form action="">
+                            <form method="POST" action="update.php" enctype="multipart/form-data">
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="form-floating mb-3">
-                                            <label for="email">Preview</label>
-                                            <img src="" alt="">
+                                            <label for="preview">Preview</label><br>
+                                            <img src="<?= asset('assets/uploads/' . $rd['profile_pic']); ?>" alt="" id="preview" width="200" height="200" class="rounded border  shadow-sm" style="object-fit: contain;   pointer-events: none;" >
+                                            <input type="hidden" name="user_id" value="<?= $rd['user_id'] ?>">
+                                            <input type="hidden" name="old_path_image" value="<?= $rd['profile_pic'] ?>">
                                         </div>
                                     </div>
                                     <!-- image && name start -->
                                     <div class="col-6">
                                         <div class="form-floating mb-3">
-                                            <label for="email">Image</label>
-                                            <input type="file" class="form-control" id="pfp">
+                                            <label for="image">Image</label>
+                                            <input type="file" class="form-control" id="image" name="image" />
                                         </div>  
                                         <div class="form-floating mb-3">
-                                            <label for="email">Name</label>
-                                            <input type="email" class="form-control" id="email" placeholder="name@example.com">
+                                            <label for="name">Name</label>
+                                            <input type="text" class="form-control" id="name" name="name" placeholder="Name..." value="<?= $rd['name'] ?>">
                                         </div>  
                                     </div>
                                     <!-- image && name end -->
@@ -47,73 +124,95 @@
                                     <div class="col-6">
                                         <div class="form-floating mb-3">
                                             <label for="email">Email address</label>
-                                            <input type="email" class="form-control" id="email" placeholder="name@example.com">
+                                            <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com"  value="<?= $rd['email'] ?>">
                                         </div>
                                         <div class="form-floating mb-3">
-                                            <label for="email">Username</label>
-                                            <input type="email" class="form-control" id="email" placeholder="name@example.com">
+                                            <label for="username">Username</label>
+                                            <input type="text" class="form-control" id="username" name="username" placeholder="Username..." value="<?= $rd['username'] ?>">
                                         </div>
                                     </div>
                                     <!-- email && username end -->
 
-
                                     <!-- phone && blood group start -->
                                     <div class="col-6">
                                         <div class="form-floating mb-3">
-                                            <label for="email">Phone</label>
-                                            <input type="email" class="form-control" id="email" placeholder="name@example.com">
+                                            <label for="phone">Phone</label>
+                                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="Phone Number..." value="<?= $rd['phone_number'] ?>">
                                         </div>
                                         <div class="form-floating mb-3">
-                                            <label for="email">Blood Group</label>
-                                            <input type="email" class="form-control" id="email" placeholder="name@example.com">
+                                            <label for="blood_group">Blood Group</label>
+                                            <select class="form-control selectric" name="blood_group" id="blood_group" >
+                                                <option value="" disabled>Select</option>
+                                                <?php foreach($blood_groups_rds as $groups_rd): ?>
+                                                    <option value="<?= $groups_rd['group_id'] ?>" <?= $groups_rd['group_id'] ==  $rd['blood_group_id'] ? 'selected' : '' ?> ><?= $groups_rd['group_name'] ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
                                         </div>
                                     </div>
                                      <!-- phone && blood group end -->
 
-
-                                     <!-- gender && bday start -->
+                                     <!-- gender && birthday start -->
                                     <div class="col-6">
                                         <div class="form-floating mb-3">
-                                            <label for="email">Gender</label>
-                                            <input type="email" class="form-control" id="email" placeholder="name@example.com">
+                                            <label for="gender">Gender</label>
+                                            <select class="form-control selectric" name="gender" id="gender" >
+                                                <option value="" disabled>Select</option>
+                                                <option value="male"  <?= $rd['gender'] ==  'male'   ? 'selected' : '' ?>>Male</option>
+                                                <option value="femal" <?= $rd['gender'] ==  'female' ? 'selected' : '' ?>>Female</option>
+                                            </select>
                                         </div>
                                         <div class="form-floating mb-3">
-                                            <label for="email">Birthday</label>
-                                            <input type="email" class="form-control" id="email" placeholder="name@example.com">
+                                            <label for="birthday">Birthday</label>
+                                            <input type="text" class="form-control datepicker"  id="birthday" name="birthday" placeholder="Birthday...">
                                         </div>
                                     </div>
-                                     <!-- gender && bday end -->
+                                     <!-- gender && birthday end -->
                                     
                                     <!-- country && is_admin start -->
                                     <div class="col-6">
                                         <div class="form-floating mb-3">
-                                            <label for="email">Country</label>
-                                            <input type="email" class="form-control" id="email" placeholder="name@example.com">
+                                            <label for="country">Country</label>
+                                            <select class="form-control selectric" name="country" id="country">
+                                                <option value="" disabled>Select</option>
+                                                <?php foreach($countries as $country): ?>
+                                                    <option value="<?= $country['country_id'] ?>" <?= $country['country_id'] ==  $rd['country_id'] ? 'selected' : '' ?> ><?= $country['country_name'] ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
                                         </div>
-
                                         <div class="form-floating mb-3">
-                                            <label for="email">Is Admin</label>
-                                            <input type="email" class="form-control" id="email" placeholder="name@example.com">
+                                            <label for="is_admin">Role</label>
+                                            <select class="form-control selectric" name="is_admin" id="is_admin">
+                                                <option value="" disabled>Select</option>
+                                                <option value="1" <?= $rd['is_admin'] == 1 ? 'selected' : '' ?>>Admin</option>
+                                                <option value="0" <?= $rd['is_admin'] == 0 ? 'selected' : '' ?>>User</option>
+                                            </select>
                                         </div>
+                                       
                                     </div>
                                     <!-- country && is_admin end -->
 
                                     <!-- acc_status && website_url start -->
                                     <div class="col-6">
                                         <div class="form-floating mb-3">
-                                            <label for="email">Account Status</label>
-                                            <input type="email" class="form-control" id="email" placeholder="name@example.com">
-                                        </div>    
-                                    
-                                        <div class="form-floating mb-3">
-                                            <label for="email">Website URL</label>
-                                            <input type="email" class="form-control" id="email" placeholder="name@example.com">
+                                            <label for="website_url">Website URL</label>
+                                            <input type="text" class="form-control" id="website_url" name="website_url" placeholder="https://www.google.com" value="<?= $rd['website_url'] ?? '' ?>">
                                         </div>                                        
+                                        <div class="form-floating mb-3">
+                                            <label for="acc_status">Account Status</label>
+                                            <select class="form-control selectric" name="acc_status" id="acc_status" >
+                                                <option value="" disabled>Select</option>
+                                                <?php foreach($statusesdb as $status): ?>
+                                                    <?php if(strtolower($status['status_type']) == 'active' or strtolower($status['status_type']) == 'suspended'): ?>
+                                                        <option value="<?= $status['status_id'] ?>" <?= $status['status_id'] ==  $rd['acc_status'] ? 'selected' : '' ?> ><?= ucwords($status['status_type']) ?></option>
+                                                    <?php endif ?>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>  
                                     </div>
                                     <!-- acc_status && website_url end -->
                                     
                                     <div class="col-6">
-                                        <button type="submit" class="btn btn-warning">Update</button>
+                                        <button type="submit" class="btn btn-warning" name="editBtn">Update</button>
                                     </div>
                                 </div>
                             </form>

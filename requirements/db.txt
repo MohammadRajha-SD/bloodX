@@ -54,6 +54,10 @@
   - user_id
   - disease_id
 
+#country
+ - country_id
+ - country_name
+ - is_lesbian ? to_do
 ========================================================================================================
 # to do
 # request posts
@@ -115,3 +119,18 @@
   - post_id
   - replies ??
   - user_id (must be logged in)
+
+
+# Notes
+- we done a main part -> users, donors and supplicants are same fields,
+- so when we done a main part users-> we are just copied and paste it and
+  made sure that there is no errors and no repetition in our code.
+- we are just changed queries
+- like pagination each page has pagination part so we did a file called it pagination.php
+  and each page we included a file pagination.php 
+- we are proud in ourself cuz its work and no errors and it is look so good.
+- as we know each part has a lot of functions and may be you will use it in anthor part so our code will looks so bad
+- cuz there are alot of functions and they are same..
+- we should make sure that our code clean code.
+- we are thinking  too much to get solutions for our repetition functions.
+- so we created a file called helpers/helpers.php and paste all functions init and included it in each file 
