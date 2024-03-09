@@ -1,0 +1,149 @@
+# start preparing the report once the admin panel is done
+# what if they had multiple countries? Or we must clarify that it's the country you currently resident in not where you're originally from.
+
+
+Css themes - https://www.freecodecamp.org/news/how-to-easily-create-themes-with-css-variables-2d0f4cfa5b9a/
+- theme: #fa1f0f
+- theme hover: #a1261d
+
+- info: #578cff
+- info hover: #427dfd
+
+- we used discord and github, vsc, and an extension called live share in vsc to make plans, transfer files, etc
+
+- fetched a list of all countries from an api (one-time fetch)
+- removed israel from the list because we do not recognise it as a country
+
+- css theme
+- ⁠get countries & cities from an API
+- ⁠finish delete btn
+- ⁠remove older pfps of a user
+- ⁠pagination
+- ⁠make sure everything works fine
+
+
+- we had some difficulties while implementing the paginator
+- we had some difficulties when Elias had to run the web app on his MacBook, due to the fact that he uses xampp instead of wamp due to it being unsupported.
+
+
+Once users go on the webpage, they'll be welcomed with the home screen which lists all the blood donation & request posts. To be able to create a post, they are required to create an account by filling in the necessary details which are name, username, email, password, phone_number. Afterwards, they may login and start creating posts.
+
+# request posts
+- if a user selects one of the confirmed diseases, the post automatically gets rejected
+- if a user selects "other" and adds in a different disease name, the post is marked as pending and an admin has to approve it
+- if a user doesn't select any diseases, the post gets listed automatically
+
+# donation posts
+- if a user selects one of the confirmed diseases, the post automatically gets rejected
+- if a user selects "other" and adds in a different disease name, the post is marked as pending and an admin has to approve it
+- if a user doesn't select any diseases, the post gets listed automatically
+
+- whole blood donations:  1 donation post every 56 days 
+- power red donations:    1 donation post every 112 days
+- platelet apheresis:     1 donation post every 7 days
+- show a colour or message on each post to show if it's compatible with the user or not
+- users between 18 and 60 years of age can donate
+
+
+# manage users
+- donors -> lists all the donors (SELECT * FROM users WHERE user_id IN (SELECT user_id FROM posts WHERE post_type = 'donate');
+- supplicants -> lists all the supplicants (SELECT * FROM users WHERE user_id IN (SELECT user_id FROM posts WHERE post_type = 'request');
+
+# manage history
+- donations -> lists all donations done by all users (select * from posts where post_type = "donation")
+- requests -> lists all requests done by all users (select * from posts where post_type = "request")
+
+
+- contact methods can be either through live chat, email, phone number, or a website url
+- there will be an admin panel/dashboard for admins to manage posts & other functionalities easily
+- about us & footer sections
+- users can choose between light and dark mode.
+
+
+# creating the admin panel
+- allowing admins to view/manage all donors & supplicants
+- allowing admins to view/manage all donation & request posts
+- add reports to the admin dashboard/panel
+
+
+- switched from having an `is_active` column in the users table to having `acc_status` and `user_status`
+- switched from oop to PDO (did some research and it turns out pdo is much more secure & better overall)
+
+
+# diseases (need to update)
+- HIV/AIDS
+- Hepatitis B/C
+- Syphilis
+- Malaria
+- Chagas disease
+- Creutzfeldt-Jakob Disease (CJD)
+- Variant Creutzfeldt-Jakob Disease (vCJD)
+- Babesiosis
+- Human T-lymphotropic virus (HTLV)
+- West Nile Virus (WNV)
+- Brucellosis
+- Leishmaniasis
+- Trypanosomiasis (including Chagas disease and African trypanosomiasis)
+- Zika virus infection
+- Ebola virus disease
+- Dengue fever
+- SARS-CoV-2 (COVID-19) infection
+
+
+#status 
+  -online  --user
+  -offline  --user
+  
+  -active   --acc
+  -inactive --post
+  
+  -suspended -acc
+  -rejected  -post
+  -approved  -post
+  -pending   -post
+
+
+# donors
+- active -> 3
+- suspended -> 5
+
+
+# posts
+- approved -> 8
+- pending -> 7
+- rejected -> 6
+- inactive -> 4
+
+
+# Notes
+- we done a main part -> users, donors and supplicants are same fields,
+- so when we done a main part users-> we are just copied and paste it and
+  made sure that there is no errors and no repetition in our code.
+- we are just changed queries
+- like pagination each page has pagination part so we did a file called it pagination.php
+  and each page we included a file pagination.php 
+- we are proud in ourself cuz its work and no errors and it is look so good.
+- as we know each part has a lot of functions and may be you will use it in anthor part so our code will looks so bad
+- cuz there are alot of functions and they are same..
+- we should make sure that our code clean code.
+- we are thinking  too much to get solutions for our repetition functions.
+- so we created a file called helpers/helpers.php and paste all functions init and included it in each file
+
+- ability choose whether to approve or rejected posts with a "pending" status
+
+# todo
+- the theme
+- the posts
+- the home panel
+- view one in tables
+- cascading on delete user to make sure this posts are deleted and make sure multiple selection or diseases.
+- delete image profile when delete user
+- add select options to diseases when create a new user and edit page 
+- when update check unique inputs that does not exists.
+
+- change diseases and add support for multiple ones instead of just one
+- add support for diseases in posts
+
+# references
+- https://www.youtube.com/watch?v=7Aq2PE_Z8Po (initial homepage design)
+- https://www.redcrossblood.org/faq.html (how often can users donate blood)

@@ -18,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $user_id = $_POST['user_id'];
+        $disease_id = $_POST['disease_id'];
         $name = $_POST['name'];
         $username = $_POST['username'];
         $email = $_POST['email'];
@@ -30,14 +31,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $blood_group_id = $_POST['blood_group'];
         $is_admin = $_POST['is_admin'];
 
-        $data = [
-            $username, $name, $email, $phone_number,
-            $gender, $birthday, $profile_pic, $website_url,
-            $country, $acc_status, $blood_group_id,
-            $is_admin, $user_id
-        ];
+        $emailChecked = isExistsDB($email, 'email', true, $user_id);
+        $usernameChecked = isExistsDB($username, 'username', true, $user_id);
 
-        $query = <<<EOT
+        if ($emailChecked && $usernameChecked) {
+            $data = [
+                $username, $name, $email, $phone_number,
+                $gender, $birthday, $profile_pic, $website_url,
+                $country, $acc_status, $blood_group_id,
+                $is_admin, $user_id
+            ];
+
+            $query = <<<EOT
                     UPDATE users 
                     SET username = ?, name = ?,
                     email = ?, phone_number = ?,
@@ -48,13 +53,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     WHERE user_id = ?
                     EOT;
 
-        $stmt = $conn->prepare($query);
-        $stmt->execute($data);
-        $_SESSION['toastr'] = [
-            'status' => 'success',
-            'message' => 'Updated Successfully'
-        ];
-        header('Location: index.php');
+            $stmt = $conn->prepare($query);
+            $stmt->execute($data);
+
+            $data_user_diseases = [
+                $disease_id, $user_id
+            ];
+
+            $query_user_diseases = <<<EOT
+                UPDATE user_diseases
+                SET disease_id = ?
+                WHERE user_id = ?;
+            EOT;
+
+            $stmt_user_diseases = $conn->prepare($query_user_diseases);
+            $stmt_user_diseases->execute($data_user_diseases);
+
+            flash('success', 'Updated Successfully.');
+
+            header('Location: index.php');
+        }
+    } else {
+        header("Location: " . $_SERVER['HTTP_REFERER']);
+        exit();
     }
 } else {
     header('Location: index.php');

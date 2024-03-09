@@ -20,8 +20,10 @@ $pages = ceil($counter / $rows_per_page);
 $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
 $start = ($current_page - 1) * $rows_per_page;
 
-$donors_query = 'SELECT users.*, posts.*, blood_groups.*, statuses.*, countries.* FROM users
+$donors_query = 'SELECT users.*, posts.*, blood_groups.*, statuses.*, countries.*, user_diseases.*, diseases.* FROM users
     INNER JOIN posts ON users.user_id = posts.user_id
+    INNER JOIN user_diseases ON users.user_id = user_diseases.user_id 
+    INNER JOIN diseases ON diseases.disease_id = user_diseases.disease_id 
     INNER JOIN blood_groups ON users.blood_group_id = blood_groups.group_id  
     INNER JOIN statuses ON users.acc_status = statuses.status_id
     INNER JOIN countries ON users.country_id = countries.country_id
@@ -68,6 +70,7 @@ try {
                                     <tr>
                                         <th class="text-center">#</th>
                                         <th>Username</th>
+                                        <th>Diseases</th>
                                         <th>Blood Group</th>
                                         <th>Country</th>
                                         <th>Gender</th>
@@ -84,17 +87,18 @@ try {
                                     if ($counter > 0) {
                                         foreach ($result as $row) {
                                             $count += 1;
-                                            $ad_query = "SELECT TIMESTAMPDIFF(YEAR, birthday, CURDATE()) AS age,  DATE_FORMAT(donated_at, '%b %m-%y') AS donated FROM users WHERE user_id = ?";
+                                            $ad_query = "SELECT TIMESTAMPDIFF(YEAR, birthday, CURDATE()) AS age,  DATE_FORMAT(donated_at, '%b %d-%y') AS donated FROM users WHERE user_id = ?";
                                             $stmt = $conn->prepare($ad_query);
                                             $stmt->execute([$row['user_id']]);
                                             $result = $stmt->fetch();
 
                                             $age = $result['age'];
-                                            $donated = $result['donated'];
+                                            $donated = $result['donated'] ?? 'N/A';
 
                                             echo '<tr>';
                                             echo '<td>' . $count . '</td>';
                                             echo '<td>' . $row["username"] . '</td>';
+                                            echo '<td>' . $row["disease_name"] . '</td>';
                                             echo '<td>' . $row["group_name"] . '</td>';
                                             echo '<td>' . $row["country_name"] . '</td>';
                                             echo '<td>' . ucwords($row["gender"]) . '</td>';
@@ -107,9 +111,9 @@ try {
                                             echo '<div class="dropdown d-inline">';
                                             echo '<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Manage</button>';
                                             echo '<div class="dropdown-menu">';
-                                            echo '<a class="dropdown-item has-icon" href="#"><i class="fas fa-heart"></i>View</a>';
-                                            echo '<a class="dropdown-item has-icon" href="edit.php?id=' . $row['user_id'] . '"><i class="fas fa-edit"></i>Edit</a>';
-                                            echo '<a class="dropdown-item has-icon delete-item" href="delete.php" data-id="' . $row['user_id'] . '"><i class="fa fa-trash"></i>Delete</a>';
+                                            echo '<a class="dropdown-item text-info has-icon" href="#"><i class="fas fa-heartbeat"></i>View</a>';
+                                            echo '<a class="dropdown-item text-success has-icon" href="edit.php?id=' . $row['user_id'] . '"><i class="fas fa-edit"></i>Edit</a>';
+                                            echo '<a class="dropdown-item text-danger has-icon delete-item" href="delete.php" data-id="' . $row['user_id'] . '"><i class="fa fa-trash"></i>Delete</a>';
                                             echo '</div>';
                                             echo '</div>';
                                             echo '</td>';

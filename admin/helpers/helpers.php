@@ -38,7 +38,7 @@ function setStatus($status)
 function setAdmin($admin)
 {
     if ($admin) {
-        return '<div class="badge badge-primary"><i class="fas fa-check"></i></div>';
+        return '<div class="badge badge-success"><i class="fas fa-check"></i></div>';
     } else {
         return '<div class="badge badge-danger"><i class="fas fa-times"></i></div>';
     }
@@ -87,7 +87,7 @@ function flash($status, $message)
     return NULL;
 }
 
-function isExistsDB($email, $field = 'email')
+function isExistsDB($name, $field = 'email', $all = false, $id = 0)
 {
     global $conn; // Access the global $conn variable
 
@@ -97,13 +97,16 @@ function isExistsDB($email, $field = 'email')
         // Field is not valid, return false
         return false;
     }
-
-    $query = "SELECT COUNT(*) AS users_count FROM users WHERE $field = ?";
+    if ($all) {
+        $query = "SELECT COUNT(*) AS users_count FROM users WHERE $field = ? and user_id != $id";
+    } else {
+        $query = "SELECT COUNT(*) AS users_count FROM users WHERE $field = ?";
+    }
     $stmt = $conn->prepare($query);
-    $stmt->execute([$email]);
+    $stmt->execute([$name]);
     $result = $stmt->fetchColumn();
 
-    return $result > 0 ? flash('error', ucwords($field) . " is already exists.") : strtolower($email);
+    return $result > 0 ? flash('error', ucwords($field) . " already exists.") : strtolower($name);
 }
 
 function old($name)

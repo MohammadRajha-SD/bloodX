@@ -134,3 +134,9 @@
 - we should make sure that our code clean code.
 - we are thinking  too much to get solutions for our repetition functions.
 - so we created a file called helpers/helpers.php and paste all functions init and included it in each file 
+
+
+#todo
+ - theme
+ - cascading on delete user to make sure this posts are deleted and make sure multiple selection or diseases.
+ - delete image profile when delete user

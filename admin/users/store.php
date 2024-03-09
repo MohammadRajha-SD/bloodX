@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $name = $_POST['name'];
+        $disease_id = $_POST['disease_id'];
         $username = $_POST['username'];
         $email = $_POST['email'];
         $passwrd = $_POST['passwrd'];
@@ -61,10 +62,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $conn->prepare($query);
             $stmt->execute($data);
 
+            // Get the ID of the newly inserted user
+            $userId = $conn->lastInsertId();
+
+            $data_user_diseases = [
+                $disease_id, $userId
+            ];
+
+            $query_user_diseases = <<<EOT
+                INSERT INTO user_diseases (disease_id, user_id) 
+                VALUES (?, ?)
+            EOT;
+
+            $stmt_user_diseases = $conn->prepare($query_user_diseases);
+            $stmt_user_diseases->execute($data_user_diseases);
+
             unset($_SESSION['OLD_DATA']);
 
             flash('success', 'Created Successfully.');
-
             header('Location: index.php?page=1');
         } else {
             header("Location: " . $_SERVER['HTTP_REFERER']);
