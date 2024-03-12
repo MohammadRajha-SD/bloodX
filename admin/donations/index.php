@@ -21,7 +21,7 @@ $start = ($current_page - 1) * $rows_per_page;
 $donations_query = 'SELECT users.*, posts.*, blood_groups.*, blood_processes.*, statuses.*, countries.*
     FROM posts
     INNER JOIN users ON posts.user_id = users.user_id
-    INNER JOIN blood_groups ON users.blood_group_id = blood_groups.group_id
+    INNER JOIN blood_groups ON posts.blood_group_id = blood_groups.group_id
     INNER JOIN blood_processes ON posts.blood_process_id = blood_processes.process_id
     INNER JOIN statuses ON posts.post_status = statuses.status_id
     INNER JOIN countries ON users.country_id = countries.country_id
@@ -49,7 +49,7 @@ try {
         <h1>Donations </h1>
         <div class="section-header-breadcrumb">
             <div class="breadcrumb-item active"><a href="../">Dashboard</a></div>
-            <div class="breadcrumb-item"><a href="">Donations</a></div>
+            <div class="breadcrumb-item"><a href="../donations/">Donations</a></div>
             <div class="breadcrumb-item">Donation Posts Details</div>
         </div>
     </div>
@@ -100,16 +100,18 @@ try {
                                             echo '<td>' . $count . '</td>';
                                             echo '<td>' . strtolower($row['username']) . '</td>';
                                             echo '<td >';
-                                            echo '<div class="dropdown mr-2 dropbottom">';
-                                            echo '<button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Diseases</button>';
-                                            echo '<div class="dropdown-menu">';
-
-                                            foreach ($diseases as $disease) {
-                                                echo '<a class="dropdown-item text-danger has-icon" href="#"><i class="fas fa-tint"></i>' . $disease['disease_name'] . '</a>';
+                                            if (count($diseases) > 0) {
+                                                echo '<div class="dropdown mr-2 dropbottom">';
+                                                echo '<button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Diseases</button>';
+                                                echo '<div class="dropdown-menu">';
+                                                foreach ($diseases as $disease) {
+                                                    echo '<a class="dropdown-item text-danger has-icon" href="#"><i class="fas fa-tint"></i>' . ucwords($disease['disease_name']) .  '</a>';
+                                                }
+                                                echo '</div>';
+                                                echo '</div>';
+                                            } else {
+                                                echo '<span class="badge badge-success" ><i class="fas fa-check mr-2"></i>No Diseases</span>';
                                             }
-
-                                            echo '</div>';
-                                            echo '</div>';
                                             echo '</td>';
                                             echo '<td>' . ucwords($row['group_name']) . '</td>';
                                             echo '<td>' . ucwords($row['process_name']) . '</td>';
@@ -131,8 +133,8 @@ try {
                                                 echo '<div class="dropdown ">';
                                                 echo '<button class="btn-sm btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</button>';
                                                 echo '<div class="dropdown-menu">';
-                                                echo '<a class="dropdown-item text-success has-icon" href="#"><i class="fas fa-check"></i>Approve</a>';
-                                                echo '<a class="dropdown-item text-danger has-icon" href="edit.php?id=' . $row['user_id'] . '"><i class="fas fa-times"></i>Reject</a>';
+                                                echo '<a class="dropdown-item text-success has-icon delete-item" href="approve.php" data-id="' . $row['post_id'] . '"><i class="fas fa-check"></i>Approve</a>';
+                                                echo '<a class="dropdown-item text-danger  has-icon delete-item"  href="reject.php" data-id="' . $row['post_id'] . '"><i class="fas fa-times"></i>Reject</a>';
                                                 echo '</div>';
                                                 echo '</div>';
                                             }

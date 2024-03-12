@@ -29,7 +29,6 @@ if (isset($_GET['id']) && $_GET['id'] != '') {
         $stmt->execute([$post_id]);
         $rd = $stmt->fetch();
 
-
         // Fetch blood groups table from database
         $query = 'SELECT * FROM blood_groups';
         $stmt = $conn->prepare($query);
@@ -129,13 +128,12 @@ if (isset($_GET['id']) && $_GET['id'] != '') {
                                     <input type="hidden" name="post_id" value="<?= $post_id; ?>">
 
                                     <div class="form-floating mb-3">
-                                        <label for="diseases">Diseases</label>
+                                        <label for="diseases">Diseases <code> (If No diseases unselect all )</code></label>
                                         <select class="form-control selectric" name="diseases[]" id="diseases" multiple>
-                                            <option value="" disabled> </option>
+                                            <option value="" disabled>No Diseases</option>
                                             <?php foreach ($diseases as $d) : ?>
-                                                <option value="<?= $d['disease_id'] ?>" <?= in_array($d['disease_name'], $selectedDiseases) ? 'selected' : '' ?>> <?= $d['disease_name']; ?> </option>
+                                                <option value="<?= $d['disease_id'] ?>" <?= in_array($d['disease_name'], $selectedDiseases) ? 'selected' : '' ?>> <?= ucwords($d['disease_name']); ?> </option>
                                             <?php endforeach; ?>
-
                                         </select>
                                     </div>
                                     <div class="form-floating mb-3">

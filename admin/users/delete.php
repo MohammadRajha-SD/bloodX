@@ -1,19 +1,27 @@
 <?php
 include '../../config.php';
+include '../helpers/helpers.php';
+session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if the user_id parameter is set in the POST request
     if (isset($_POST['id'])) {
+        $dir = '../assets/uploads/';
         $user_id = $_POST['id'];
-        
-        $query = 'DELETE FROM users WHERE user_id = ?';
-        $stmt = $conn->prepare($query);
+        $imagePath = $_POST['img'];
+
+        if ($imagePath != $_SESSION['DEFAULT_IMAGE_PATH']) {
+            deleteImage($dir, $imagePath);
+        }
+
+        $delete_query = 'DELETE FROM users WHERE user_id = ?';
+        $stmt = $conn->prepare($delete_query);
         $stmt->execute([$user_id]);
 
         // Check if the deletion was successful
         $response = [
             'status' => 'success',
-            'message' => 'User deleted successfully'
+            'message' => 'The user along with their posts were deleted successfully'
         ];
     } else {
         $response = [
@@ -26,4 +34,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo json_encode($response);
     exit;
 }
-?>

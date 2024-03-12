@@ -13,13 +13,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $imgPath = uploadImage($_FILES['image'], $dir);
 
         if ($imgPath) {
-            $profile_pic = $imgPath;
+            $img = $imgPath;
         } else {
-            $profile_pic = $_SESSION['DEFAULT_IMAGE_PATH'];
+            $img = $_SESSION['DEFAULT_IMAGE_PATH'];
         }
 
         $name = $_POST['name'];
-        $disease_id = $_POST['disease_id'];
+        $diseases = $_POST['diseases'];
         $username = $_POST['username'];
         $email = $_POST['email'];
         $passwrd = $_POST['passwrd'];
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $gender = $_POST['gender'];
         $country_id = $_POST['country'];
         $birthday = $_POST['birthday'];
-        $profile_pic = $profile_pic;
+        $profile_pic = $img;
         $website_url = $_POST['website_url'];
         $acc_status = $_POST['acc_status'];
         $blood_group_id = $_POST['blood_group'];
@@ -50,33 +50,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $usernameChecked = isExistsDB($username, 'username');
 
         if ($emailChecked && $usernameChecked) {
-            $query = <<<EOT
-                    INSERT INTO users(
+            $query = 'INSERT INTO users(
                         name, username, email, passwrd, 
                         phone_number, gender, country_id, birthday, 
                         profile_pic, website_url, 
                         acc_status, blood_group_id, is_admin
-                    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);
-                EOT;
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
 
             $stmt = $conn->prepare($query);
             $stmt->execute($data);
 
-            // Get the ID of the newly inserted user
-            $userId = $conn->lastInsertId();
-
-            $data_user_diseases = [
-                $disease_id, $userId
-            ];
-
-            $query_user_diseases = <<<EOT
-                INSERT INTO user_diseases (disease_id, user_id) 
-                VALUES (?, ?)
-            EOT;
-
-            $stmt_user_diseases = $conn->prepare($query_user_diseases);
-            $stmt_user_diseases->execute($data_user_diseases);
-
+            $user_id = $conn->lastInsertId();
+            foreach ($diseases as $disease_id) {
+                $query = 'INSERT INTO user_diseases (user_id, disease_id) VALUES (?, ?)';
+                $stmt = $conn->prepare($query);
+                $stmt->execute([$user_id, $disease_id]);
+            }
             unset($_SESSION['OLD_DATA']);
 
             flash('success', 'Created Successfully.');

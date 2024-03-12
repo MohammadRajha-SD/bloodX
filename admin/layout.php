@@ -14,7 +14,7 @@ $_SESSION['POST_STATUSES'] = ['pending', 'rejected', 'approved', 'inactive'];
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-  <title>Blood X</title>
+  <title><?= $pageTitle ?></title>
 
   <!-- General CSS Files -->
   <link rel="stylesheet" href="<?= asset('assets/modules/bootstrap/css/bootstrap.css'); ?>">
@@ -34,7 +34,6 @@ $_SESSION['POST_STATUSES'] = ['pending', 'rejected', 'approved', 'inactive'];
   <link rel="stylesheet" href="<?= asset('assets/modules/bootstrap-timepicker/css/bootstrap-timepicker.min.css'); ?>">
   <link rel="stylesheet" href="<?= asset('assets/modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.css'); ?>">
   <link rel="stylesheet" href="<?= asset('assets/modules/ionicons/css/ionicons.min.css'); ?>">
-
 
   <link rel="stylesheet" href="<?= asset('assets/modules/izitoast/css/iziToast.min.css'); ?>" />
   <!-- Template CSS -->
@@ -57,9 +56,6 @@ $_SESSION['POST_STATUSES'] = ['pending', 'rejected', 'approved', 'inactive'];
 
   <!-- /END GA -->
 </head>
-<!-- CSS Libraries -->
-
-<link rel="stylesheet" href="<?= asset('assets/modules/dropzonejs/dropzone.css'); ?>">
 
 <body>
   <div id="app">
@@ -131,8 +127,10 @@ $_SESSION['POST_STATUSES'] = ['pending', 'rejected', 'approved', 'inactive'];
       $('body').on('click', '.delete-item', function(event) {
         event.preventDefault();
 
-        let deleteUrl = $(this).attr('href');
+        let URL = $(this).attr('href');
         let id = $(this).data('id');
+        let img = $(this).attr('data-image');
+        let title = URL.startsWith('delete') ? 'Deleted' : 'Updated';
 
         swal({
           title: "Are you sure?",
@@ -143,19 +141,20 @@ $_SESSION['POST_STATUSES'] = ['pending', 'rejected', 'approved', 'inactive'];
           cancelButtonColor: '#d33',
           confirmButtonText: 'Yes, delete it!',
           buttons: true,
-          dangerMode: true,
-        }).then((deleteIt) => {
-          if (deleteIt) {
+          dangerMode: true
+        }).then((will) => {
+          if (will) {
             $.ajax({
               type: 'POST',
-              url: deleteUrl,
+              url: URL,
               data: {
-                id
-              }, // Pass the id as part of the data object
+                id: id,
+                img: img
+              },
               success: function(data) {
-                if (data.status === 'success') { // Make sure your server returns a JSON response with a status property
+                if (data.status === 'success') {
                   swal(data.message, {
-                    title: 'Deleted!',
+                    title: title,
                     icon: "success",
                   }).then(() => {
                     window.location.reload();
@@ -196,8 +195,6 @@ $_SESSION['POST_STATUSES'] = ['pending', 'rejected', 'approved', 'inactive'];
     unset($_SESSION['toastr']);
   }
   ?>
-  <script src="<?= asset('assets/js/page/components-multiple-upload.js'); ?>"></script>
-  <script src="<?= asset('assets/modules/dropzonejs/min/dropzone.min.js'); ?>"></script>
 </body>
 
 </html>

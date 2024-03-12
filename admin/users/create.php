@@ -72,7 +72,6 @@ try {
                                         <label for="image">Image</label>
                                         <input type="file" class="form-control" id="image" name="image" />
                                     </div>
-
                                 </div>
                                 <div class="col-6">
                                     <div class="form-floating mb-3">
@@ -155,9 +154,8 @@ try {
                                     <div class="form-floating mb-3">
                                         <label for="is_admin">Role</label>
                                         <select class="form-control selectric" name="is_admin" id="is_admin" required>
-                                            <option value="">Select</option>
-                                            <option value="1" <?= old('is_admin') == 1 ? 'selected' : ''; ?>>Admin</option>
                                             <option value="0" <?= old('is_admin') == 0 ? 'selected' : ''; ?>>User</option>
+                                            <option value="1" <?= old('is_admin') == 1 ? 'selected' : ''; ?>>Admin</option>
                                         </select>
                                     </div>
 
@@ -173,7 +171,6 @@ try {
                                     <div class="form-floating mb-3">
                                         <label for="acc_status">Account Status</label>
                                         <select class="form-control selectric" name="acc_status" id="acc_status" value="<?= old('acc_status') ?>" required>
-                                            <option value="">Select</option>
                                             <?php foreach ($statusesdb as $status) : ?>
                                                 <?php if (strtolower($status['status_type']) == 'active' or strtolower($status['status_type']) == 'suspended') : ?>
                                                     <option value="<?= $status['status_id'] ?>" <?= $status['status_id'] == old('acc_status') ? 'selected' : '' ?>><?= ucwords($status['status_type']) ?></option>
@@ -185,11 +182,11 @@ try {
                                 <!-- acc_status && website_url end -->
                                 <div class="col-12">
                                     <div class="form-floating mb-3">
-                                        <label for="disease_id">Diseases</label>
-                                        <select class="form-control selectric" name="disease_id" id="disease_id">
-                                            <option value="">Select</option>
-                                            <?php foreach ($diseases as $disease) : ?>
-                                                <option value="<?= $disease['disease_id'] ?>" <?= $disease['disease_id'] == old('disease_id') ? 'selected' : '' ?>><?= ucwords($disease['disease_name']) ?></option>
+                                        <label for="disecases">Diseases <code> (If No diseases unselect all )</code></label>
+                                        <select class="form-control selectric" name="diseases[]" id="diseases" multiple>
+                                            <option value="" disabled>No Diseases</option>
+                                            <?php foreach ($diseases as $d) : ?>
+                                                <option value="<?= $d['disease_id'] ?>" <?= (old('diseases') ? in_array($d['disease_id'], old('diseases')) : false) ? 'selected' : '' ?>> <?= $d['disease_name'] ?> </option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>

@@ -11,24 +11,27 @@ $query = 'SELECT COUNT(*) as counter_user, users.*, posts.* FROM users
     INNER JOIN posts ON users.user_id = posts.user_id
     WHERE posts.post_type = ?';
 
-$rows_per_page = 2;
+$rows_per_page = 10;
 $stmt = $conn->prepare($query);
 $stmt->execute([$post_type]);
 $counter = $stmt->fetchColumn();
 $pages = ceil($counter / $rows_per_page);
-
 $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
 $start = ($current_page - 1) * $rows_per_page;
 
-$donors_query = 'SELECT users.*, posts.*, blood_groups.*, statuses.*, countries.*, user_diseases.*, diseases.* FROM users
-    INNER JOIN posts ON users.user_id = posts.user_id
-    INNER JOIN user_diseases ON users.user_id = user_diseases.user_id 
-    INNER JOIN diseases ON diseases.disease_id = user_diseases.disease_id 
+$donors_query = 'SELECT users.*, blood_groups.*, statuses.*, countries.*, posts.* FROM users
     INNER JOIN blood_groups ON users.blood_group_id = blood_groups.group_id  
+    INNER JOIN posts ON users.user_id = posts.user_id  
     INNER JOIN statuses ON users.acc_status = statuses.status_id
     INNER JOIN countries ON users.country_id = countries.country_id
-    WHERE posts.post_type = ? LIMIT ?, ?';
+    WHERE posts.post_type = ?
+    LIMIT ?, ?';
 
+// fetch user's diseases where post type 'donation'
+$ds_query = 'SELECT  user_diseases.*, diseases.* FROM users
+  INNER JOIN user_diseases ON users.user_id = user_diseases.user_id
+  INNER JOIN diseases ON user_diseases.disease_id = diseases.disease_id
+  WHERE users.user_id = ?';
 try {
     $count = 0;
     $stmt = $conn->prepare($donors_query);
@@ -95,10 +98,27 @@ try {
                                             $age = $result['age'];
                                             $donated = $result['donated'] ?? 'N/A';
 
+                                            $stmt = $conn->prepare($ds_query);
+                                            $stmt->execute([$row['user_id']]);
+                                            $diseases = $stmt->fetchAll();
+
                                             echo '<tr>';
                                             echo '<td>' . $count . '</td>';
                                             echo '<td>' . $row["username"] . '</td>';
-                                            echo '<td>' . $row["disease_name"] . '</td>';
+                                            echo '<td >';
+                                            if (count($diseases) > 0) {
+                                                echo '<div class="dropdown mr-2 dropbottom">';
+                                                echo '<button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Diseases</button>';
+                                                echo '<div class="dropdown-menu">';
+                                                foreach ($diseases as $disease) {
+                                                    echo '<a class="dropdown-item text-danger has-icon" href="#"><i class="fas fa-tint"></i>' . $disease['disease_name'] .  '</a>';
+                                                }
+                                                echo '</div>';
+                                                echo '</div>';
+                                            } else {
+                                                echo '<span class="badge badge-success" ><i class="fas fa-check mr-2"></i>No Diseases</span>';
+                                            }
+                                            echo '</td>';
                                             echo '<td>' . $row["group_name"] . '</td>';
                                             echo '<td>' . $row["country_name"] . '</td>';
                                             echo '<td>' . ucwords($row["gender"]) . '</td>';

@@ -10,9 +10,8 @@ if (isset($_GET['id']) && $_GET['id'] != '') {
     try {
         // Fetch users table from database
         $user_id = $_GET['id'];
-        $query = 'SELECT users.*, user_diseases.* FROM users 
-        INNER JOIN  user_diseases ON users.user_id = user_diseases.user_id
-        WHERE users.user_id = ?';
+
+        $query = 'SELECT * FROM users WHERE user_id = ?';
         $stmt = $conn->prepare($query);
         $stmt->execute([$user_id]);
         $rd = $stmt->fetch();
@@ -46,6 +45,23 @@ if (isset($_GET['id']) && $_GET['id'] != '') {
         $stmt = $conn->prepare($query);
         $stmt->execute();
         $diseases = $stmt->fetchAll();
+
+        // fetch user's diseases 
+        $query = 'SELECT  user_diseases.*, diseases.* FROM users
+          INNER JOIN user_diseases ON users.user_id = user_diseases.user_id
+          INNER JOIN diseases ON user_diseases.disease_id = diseases.disease_id
+          WHERE users.user_id = ?';
+
+        $stmt = $conn->prepare($query);
+        $stmt->execute([$user_id]);
+        $user_diseases = $stmt->fetchAll();
+
+        $selectedDiseases = []; // Initialize an array to store selected disease names
+        foreach ($user_diseases as $disease) {
+            if (in_array($disease['disease_id'], array_column($diseases, 'disease_id'))) {
+                $selectedDiseases[] = $disease['disease_name'];
+            }
+        }
     } catch (PDOException $e) {
         echo $e->getMessage();
     }
@@ -191,10 +207,11 @@ if (isset($_GET['id']) && $_GET['id'] != '') {
                                 <!-- acc_status && website_url end -->
                                 <div class="col-12">
                                     <div class="form-floating mb-3">
-                                        <label for="disease_id">Diseases</label>
-                                        <select class="form-control selectric" name="disease_id" id="disease_id">
-                                            <?php foreach ($diseases as $disease) : ?>
-                                                <option value="<?= $disease['disease_id'] ?>" <?= $disease['disease_id'] ==  $rd['disease_id'] ? 'selected' : '' ?>><?= ucwords($disease['disease_name']) ?></option>
+                                        <label for="diseases">Diseases <code> (If No diseases unselect all )</code></label>
+                                        <select class="form-control selectric" name="diseases[]" id="diseases" multiple>
+                                            <option value="" disabled>No Diseases</option>
+                                            <?php foreach ($diseases as $d) : ?>
+                                                <option value="<?= $d['disease_id'] ?>" <?= in_array($d['disease_name'], $selectedDiseases) ? 'selected' : '' ?>> <?= $d['disease_name']; ?> </option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>

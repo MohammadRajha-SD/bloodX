@@ -7,8 +7,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $post_id = $_POST['id'];
 
         $query = 'DELETE FROM posts WHERE post_id = ?';
-        $stmt = $conn -> prepare($query);
-        $stmt -> execute([$post_id]);
+        $stmt = $conn->prepare($query);
+        $stmt->execute([$post_id]);
 
         // Check if the deletion was successful
         $response = [

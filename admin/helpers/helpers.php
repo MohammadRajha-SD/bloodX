@@ -43,6 +43,7 @@ function setAdmin($admin)
         return '<div class="badge badge-danger"><i class="fas fa-times"></i></div>';
     }
 }
+
 function checkImageIfExists($dir, $path)
 {
     if (file_exists($dir . $path)) {
@@ -112,6 +113,9 @@ function isExistsDB($name, $field = 'email', $all = false, $id = 0)
 function old($name)
 {
     if (isset($_SESSION['OLD_DATA'])) {
+        if (is_array($_SESSION['OLD_DATA'])) {
+            return $_SESSION['OLD_DATA'][$name];
+        }
         return htmlspecialchars($_SESSION['OLD_DATA'][$name]);
     } else {
         return '';
