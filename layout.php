@@ -1,64 +1,146 @@
 <?php
-  function asset($path) {
-      $dir = '/bt3/project1/';
-      if(!isset($path)){
-        return $dir;
-      }
-      return $dir . $path;
-  }
-?>
+include_once 'helpers/helpers.php';
 
+define('LAYOUT_PATH_FRONTEND', '/bt3/bloodX/');
+$_SESSION['LAYOUT_PATH_FRONTEND'] = '/bt3/bloodX/';
+$_SESSION['ADMIN_ARRAY'] = ['admin', 'admin@gmail.com'];
+?>
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><?php echo $pageTitle ?? 'Blood X'; ?> </title>
-  
-    <!-- CSS IMPORT -->
-    <link rel="stylesheet" href="<?php echo asset('css/style.css'); ?>" />
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="<?php echo asset('css/bootstrap.css'); ?>" />
-    
-    <!-- Others -->
-    <link rel="stylesheet" href="<?php echo asset('css/virtual-select.min.css');?>" />
-    <link rel="stylesheet" href="<?php echo asset('fonts/css/font-awesome.css'); ?>">
-  
-  </head>
-  <body>
-    <?php 
-      include('header.php'); 
-    ?>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densityDpi=device-dpi" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title><?= $pageTitle; ?></title>
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="stylesheet" href="<?= asset('assets/css/all.min.css'); ?>">
+  <link rel="stylesheet" href="<?= asset('assets/css/bootstrap.min.css'); ?>">
+  <link rel="stylesheet" href="<?= asset('assets/css/select2.min.css'); ?>">
+  <link rel="stylesheet" href="<?= asset('assets/css/slick.css'); ?>">
+  <link rel="stylesheet" href="<?= asset('assets/css/jquery.nice-number.min.css'); ?>">
+  <link rel="stylesheet" href="<?= asset('assets/css/jquery.calendar.css'); ?>">
+  <link rel="stylesheet" href="<?= asset('assets/css/add_row_custon.css'); ?>">
+  <link rel="stylesheet" href="<?= asset('assets/css/mobile_menu.css'); ?>">
+  <link rel="stylesheet" href="<?= asset('assets/css/jquery.exzoom.css'); ?>">
+  <link rel="stylesheet" href="<?= asset('assets/css/multiple-image-video.css'); ?>">
+  <link rel="stylesheet" href="<?= asset('assets/css/ranger_style.css'); ?>">
+  <link rel="stylesheet" href="<?= asset('assets/css/jquery.classycountdown.css'); ?>">
+  <link rel="stylesheet" href="<?= asset('assets/css/venobox.min.css'); ?>">
+  <link rel="stylesheet" href="<?= asset('assets/css/virtual-select.min.css'); ?>" />
+  <link rel="stylesheet" href="<?= asset('assets/css/style.css'); ?>">
+  <link rel="stylesheet" href="<?= asset('assets/css/responsive.css'); ?>">
+  <link rel="stylesheet" href="<?= asset('assets/modules/jquery-selectric/selectric.css'); ?>">
+  <link rel="stylesheet" href="<?= asset('assets/css/toastr.min.css'); ?>">
 
-    <main class="my-3">
-        <?php echo $content; ?>
-    </main>
+  <!-- <link rel="stylesheet" href="css/rtl.css"> -->
+</head>
 
-    <?php 
-      include('footer.php'); 
-    ?> 
+<body>
 
-    <script type="text/javascript" src="<?php echo  asset('js/script.js'); ?>"></script>
-    <script src="<?php echo asset('js/virtual-select.min.js'); ?>"></script>
-    <script src="<?php echo asset('js/bootstrap.min.js'); ?>"></script>
+  <!--============================
+        HEADER START
+    ==============================-->
+  <?php include_once('header.php'); ?>
+  <!--============================
+        HEADER END
+    ==============================-->
 
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+  <!--============================
+        MAIN MENU START
+    ==============================-->
+  <?php include_once('navbar.php'); ?>
+  <!--============================
+        MAIN MENU END
+    ==============================-->
 
-    <!-- TO MAKE DESGIN FOR SELECT TAG  -->
-      <script>
-        // VirtualSelect.init({
-        //   ele: '#nationalitiesSelect'
-        // });
-      </script>
-    <!-- // TO MAKE DESGIN FOR SELECT TAG //  -->
 
-    <!-- FLASH MSG IS GOING HERE -->
-      <div class="position-absolute" style="bottom: 2%; right: 2%;">
-        <?php // include('flash.php'); ?>
-      </div>
-    <!-- // FLASH MSG IS GOING HERE // -->
+  <!-- Main Content -->
+  <main class="my-3 main-content">
+    <?= $content; ?>
+  </main>
+  <!-- // Main Content // -->
 
-  </body>
+  <!--============================
+        FOOTER PART START
+    ==============================-->
+  <?php include_once('footer.php'); ?>
+
+  <!--============================
+        FOOTER PART END
+    ==============================-->
+
+
+  <!--============================
+        SCROLL BUTTON START
+    ==============================-->
+  <div class="wsus__scroll_btn">
+    <i class="fas fa-chevron-up"></i>
+  </div>
+  <!--============================
+        SCROLL BUTTON  END
+    ==============================-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <!--jquery library js-->
+  <script src="<?= asset('assets/js/jquery-3.6.0.min.js'); ?>"></script>
+  <!--bootstrap js-->
+  <script src="<?= asset('assets/js/bootstrap.bundle.min.js'); ?>"></script>
+  <!--font-awesome js-->
+  <script src="<?= asset('assets/js/Font-Awesome.js'); ?>"></script>
+  <!--select2 js-->
+  <script src="<?= asset('assets/js/select2.min.js'); ?>"></script>
+  <!--slick slider js-->
+  <script src="<?= asset('assets/js/slick.min.js'); ?>"></script>
+  <!--simplyCountdown js-->
+  <script src="<?= asset('assets/js/simplyCountdown.js'); ?>"></script>
+  <!--product zoomer js-->
+  <script src="<?= asset('assets/js/jquery.exzoom.js'); ?>"></script>
+  <!--nice-number js-->
+  <script src="<?= asset('assets/js/jquery.nice-number.min.js'); ?>"></script>
+  <!--counter js-->
+  <script src="<?= asset('assets/js/jquery.waypoints.min.js'); ?>"></script>
+  <script src="<?= asset('assets/js/jquery.countup.min.js'); ?>"></script>
+  <!--add row js-->
+  <script src="<?= asset('assets/js/add_row_custon.js'); ?>"></script>
+  <!--multiple-image-video js-->
+  <script src="<?= asset('assets/js/multiple-image-video.js'); ?>"></script>
+  <!--sticky sidebar js-->
+  <script src="<?= asset('assets/js/sticky_sidebar.js'); ?>"></script>
+  <!--price ranger js-->
+  <script src="<?= asset('assets/js/ranger_jquery-ui.min.js'); ?>"></script>
+  <script src="<?= asset('assets/js/ranger_slider.js'); ?>"></script>
+  <!--isotope js-->
+  <script src="<?= asset('assets/js/isotope.pkgd.min.js'); ?>"></script>
+  <!--venobox js-->
+  <script src="<?= asset('assets/js/venobox.min.js'); ?>"></script>
+  <!--classycountdown js-->
+  <script src="<?= asset('assets/js/jquery.classycountdown.js'); ?>"></script>
+
+  <!--main/custom js-->
+  <script src="<?= asset('assets/js/main.js'); ?>"></script>
+  <script src="<?= asset('assets/js/virtual-select.min.js'); ?>"></script>
+  <script src="<?= asset('assets/js/toastr.min.js'); ?>"></script>
+
+  <script>
+    VirtualSelect.init({
+      ele: '#BloodGroupSelect',
+      popupDropboxBreakpoint: '3000px',
+    });
+    VirtualSelect.init({
+      ele: '#CountrySelect',
+      popupDropboxBreakpoint: '3000px'
+    });
+    VirtualSelect.init({
+      ele: '#GenderSelect'
+    });
+    VirtualSelect.init({
+      ele: '#diseases',
+      popupDropboxBreakpoint: '3000px'
+    });
+  </script>
+  <?php
+  include 'flash.php';
+  ?>
+</body>
+
 </html>

@@ -182,7 +182,7 @@ try {
                                 <!-- acc_status && website_url end -->
                                 <div class="col-12">
                                     <div class="form-floating mb-3">
-                                        <label for="disecases">Diseases <code> (If No diseases unselect all )</code></label>
+                                        <label for="diseases">Diseases <code> (If No diseases unselect all )</code></label>
                                         <select class="form-control selectric" name="diseases[]" id="diseases" multiple>
                                             <option value="" disabled>No Diseases</option>
                                             <?php foreach ($diseases as $d) : ?>

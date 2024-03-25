@@ -1,74 +1,86 @@
 <?php
+// Include necessary files
 include '../../config.php';
 include '../helpers/helpers.php';
 
+// Start session
 session_start();
 
+// Check if the request method is POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $dir = '../assets/uploads/';
-    $old_path_image = $_POST['old_path_image'];
-    $imgPath = uploadImage($_FILES['image'], $dir);
+    // Directory for image uploads
+    $uploadDirectory = '../assets/uploads/';
 
-    if ($imgPath) {
-        $profile_pic = $imgPath;
-        deleteImage($dir, $old_path_image);
-    } else {
-        $profile_pic = $old_path_image;
-    }
+    // Retrieve old image path
+    $oldImagePath = $_POST['old_path_image'];
 
-    $user_id    = $_POST['user_id'];
-    $diseases = $_POST['diseases'];
-    $name       = $_POST['name'];
-    $username   = strtolower($_POST['username']);
-    $email      = strtolower($_POST['email']);
-    $phone_number = $_POST['phone'];
-    $gender     = $_POST['gender'];
-    $country    = $_POST['country'];
-    $birthday   = $_POST['birthday'];
-    $website_url = $_POST['website_url'];
-    $acc_status  = $_POST['acc_status'];
-    $blood_group_id = $_POST['blood_group'];
-    $is_admin       = $_POST['is_admin'];
+    // Upload new image and handle image update
+    $newImagePath = uploadImage($_FILES['image'], $uploadDirectory);
+    $profilePic = $newImagePath ? $newImagePath : $oldImagePath;
 
-    $emailChecked = isExistsDB($email, 'email', true, $user_id);
-    $usernameChecked = isExistsDB($username, 'username', true, $user_id);
+    // Retrieve and sanitize input data
+    $userId = $_POST['user_id'];
+    $diseases = isset($_POST['diseases']) ? $_POST['diseases'] : [];
+    $name = $_POST['name'];
+    $username = strtolower($_POST['username']);
+    $email = strtolower($_POST['email']);
+    $phoneNumber = $_POST['phone'];
+    $gender = $_POST['gender'];
+    $country = $_POST['country'];
+    $birthday = $_POST['birthday'];
+    $websiteUrl = $_POST['website_url'];
+    $accStatus = $_POST['acc_status'];
+    $bloodGroupId = $_POST['blood_group'];
+    $isAdmin = $_POST['is_admin'];
 
-    if ($emailChecked && $usernameChecked) {
-        $query = 'DELETE FROM user_diseases WHERE user_id = ?';
-        $stmt = $conn->prepare($query);
-        $stmt->execute([$user_id]);
+    // Check if email and username already exist
+    $emailExists = isExistsDB($email, 'email', true, $userId);
+    $usernameExists = isExistsDB($username, 'username', true, $userId);
 
-        foreach ($diseases as $disease_id) {
-            $query = 'INSERT INTO user_diseases (user_id, disease_id) VALUES (?, ?)';
-            $stmt = $conn->prepare($query);
-            $stmt->execute([$user_id, $disease_id]);
+    if (!$emailExists || !$usernameExists) {
+        // Delete existing user diseases
+        $deleteQuery = 'DELETE FROM user_diseases WHERE user_id = ?';
+        $deleteStmt = $conn->prepare($deleteQuery);
+        $deleteStmt->execute([$userId]);
+
+        // Insert new user diseases
+        foreach ($diseases as $diseaseId) {
+            $insertQuery = 'INSERT INTO user_diseases (user_id, disease_id) VALUES (?, ?)';
+            $insertStmt = $conn->prepare($insertQuery);
+            $insertStmt->execute([$userId, $diseaseId]);
         }
 
-        $data = [
-            $username, $name, $email, $phone_number,
-            $gender, $birthday, $profile_pic, $website_url,
-            $country, $acc_status, $blood_group_id,
-            $is_admin, $user_id
+        // Update user information
+        $updateQuery = 'UPDATE users SET
+            username = ?, name = ?,
+            email = ?, phone_number = ?,
+            gender = ?, birthday = ?,
+            profile_pic = ?, website_url = ?,
+            country_id = ?, acc_status = ?,
+            blood_group_id = ?, is_admin = ?
+            WHERE user_id = ?';
+
+        $updateData = [
+            $username, $name, $email, $phoneNumber,
+            $gender, $birthday, $profilePic, $websiteUrl,
+            $country, $accStatus, $bloodGroupId,
+            $isAdmin, $userId
         ];
 
-        $query = 'UPDATE users SET
-        username = ?, name = ?,
-        email = ?, phone_number = ?,
-        gender = ?, birthday = ?,
-        profile_pic = ?, website_url = ?,
-        country_id = ?, acc_status = ?,
-        blood_group_id = ?, is_admin = ?
-        WHERE user_id = ?';
+        $updateStmt = $conn->prepare($updateQuery);
+        $updateStmt->execute($updateData);
 
-        $stmt = $conn->prepare($query);
-        $stmt->execute($data);
-
+        // Set success flash message and redirect
         flash('success', 'Updated Successfully.');
         header('Location: index.php');
+        exit();
     } else {
+        // Redirect back if email or username already exists
         header("Location: " . $_SERVER['HTTP_REFERER']);
         exit();
     }
 } else {
+    // Redirect if request method is not POST
     header('Location: index.php');
+    exit();
 }

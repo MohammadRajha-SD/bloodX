@@ -19,12 +19,11 @@ $pages = ceil($counter / $rows_per_page);
 $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
 $start = ($current_page - 1) * $rows_per_page;
 
-$donors_query = 'SELECT users.*, blood_groups.*, statuses.*, countries.*, posts.* FROM users
+$donors_query = 'SELECT  users.user_id, users.*, blood_groups.*, statuses.*, countries.* FROM users
     INNER JOIN blood_groups ON users.blood_group_id = blood_groups.group_id  
-    INNER JOIN posts ON users.user_id = posts.user_id  
     INNER JOIN statuses ON users.acc_status = statuses.status_id
     INNER JOIN countries ON users.country_id = countries.country_id
-    WHERE posts.post_type = ?
+    WHERE users.user_id IN (SELECT user_id FROM posts WHERE post_type = ?)
     LIMIT ?, ?';
 
 // fetch user's diseases where post type 'donation'
@@ -32,6 +31,7 @@ $ds_query = 'SELECT  user_diseases.*, diseases.* FROM users
   INNER JOIN user_diseases ON users.user_id = user_diseases.user_id
   INNER JOIN diseases ON user_diseases.disease_id = diseases.disease_id
   WHERE users.user_id = ?';
+
 try {
     $count = 0;
     $stmt = $conn->prepare($donors_query);
@@ -84,7 +84,6 @@ try {
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-
                                 <tbody>
                                     <?php
                                     if ($counter > 0) {

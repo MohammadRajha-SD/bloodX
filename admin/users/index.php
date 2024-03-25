@@ -2,9 +2,9 @@
 include '../../config.php';
 include '../helpers/helpers.php';
 $pageTitle = "Users";
-
 ob_start();
 session_start();
+
 
 $query = 'SELECT COUNT(*) as counter_user FROM users';
 

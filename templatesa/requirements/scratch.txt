@@ -1,0 +1,162 @@
+# Todo
+- added   -> cascading to make sure the posts of a user get deleted whenever the user gets deleted.
+- added   -> select support to select multiple diseases in "new user" and "edit user" pages
+- deleted -> a user's pfp from the folder whenever a user gets deleted.
+- fixed   -> fix the update form not uploading the new pfp on elias's pc
+
+- get the list of all the diseases that prevent a user from donating ors requeting blood
+- the home panel
+- view one in tables
+
+==============================================================================================================================================================
+# Notes
+
+- start preparing the report once the admin panel is done
+- Once users go on the webpage, they'll be welcomed with the home screen which lists all the blood donation & request posts. To be able to create a post, they are required to create an account by filling in the necessary details which are name, username, email, password, phone_number. Afterwards, they may login and start creating posts.
+
+- we used discord and github, vsc, and an extension called live share in vsc to make plans, transfer files, etc
+- fetched a list of all countries from an api (one-time fetch)
+- removed israel from the list because we do not recognise it as a country
+- ⁠get countries & cities from an API
+
+- contact methods can be either through live chat, email, phone number, or a website url
+- there will be an admin panel/dashboard for admins to manage posts & other functionalities easily
+- about us & footer sections
+- users can choose between light and dark mode.
+
+- switched from having an `is_active` column in the users table to having `acc_status` and `user_status`
+- switched from oop to PDO (did some research and it turns out pdo is much more secure & better overall)
+- we had some difficulties while implementing the paginator
+- we had some difficulties when Elias had to run the web app on his MacBook, due to the fact that he uses xampp instead of wamp due to it being unsupported.
+- we thought we needed to limit the birthday to 18 - 60 years, but patients of any age can request blood so we left it as it is
+
+- added a new theme to match the website's idea
+  - theme: #fa1f0f
+  - theme hover: #a1261d
+
+  - info: #578cff
+  - info hover: #427dfd
+
+- added the table to show all donation/request posts
+- added a check so users can't use an email/username that is already registered.
+- added support for diseases in posts
+- added the ability choose whether to approve or rejected posts with a "pending" status
+- changed select menu account status in "new user". (now should be active by default)
+
+- having some trouble adding the `on delete` cascade to the posts table
+
+# request posts
+- if a user selects one of the confirmed diseases, the post automatically gets rejected
+- if a user selects "other" and adds in a different disease name, the post is marked as pending and an admin has to approve it
+- if a user doesn't select any diseases, the post gets listed automatically
+
+# donation posts
+- if a user selects one of the confirmed diseases, the post automatically gets rejected
+- if a user selects "other" and adds in a different disease name, the post is marked as pending and an admin has to approve it
+- if a user doesn't select any diseases, the post gets listed automatically
+
+- whole blood donations:  1 donation post every 56 days 
+- power red donations:    1 donation post every 112 days
+- platelet apheresis:     1 donation post every 7 days
+- show a colour or message on each post to show if it's compatible with the user or not
+
+# manage users
+- donors -> lists all the donors (SELECT * FROM users WHERE user_id IN (SELECT user_id FROM posts WHERE post_type = 'donate');
+- supplicants -> lists all the supplicants (SELECT * FROM users WHERE user_id IN (SELECT user_id FROM posts WHERE post_type = 'request');
+
+# manage history
+- donations -> lists all donations done by all users (select * from posts where post_type = "donation")
+- requests -> lists all requests done by all users (select * from posts where post_type = "request")
+
+# creating the admin panel
+- allowing admins to view/manage all donors & supplicants
+- allowing admins to view/manage all donation & request posts
+- add reports to the admin dashboard/panel
+
+- we done a main part -> users, donors and supplicants are same fields,
+- so when we done a main part users-> we are just copied and paste it and
+  made sure that there is no errors and no repetition in our code.
+- we are just changed queries
+- like pagination each page has pagination part so we did a file called it pagination.php
+  and each page we included a file pagination.php 
+- we are proud in ourself cuz its work and no errors and it is look so good.
+- as we know each part has a lot of functions and may be you will use it in anthor part so our code will looks so bad
+- cuz there are alot of functions and they are same..
+- we should make sure that our code clean code.
+- we are thinking  too much to get solutions for our repetition functions.
+- so we created a file called helpers/helpers.php and paste all functions init and included it in each file
+
+we got some errors when we done users ,donors and supplicants then beginning in second part ‘Posts’ like donations and requests ..
+we forgot to make diseases column and it was too much difficult to make some changes in your code after gets done..
+but it was a good part because we fixed some errors like when delete user should make sure that you deleted his profile image, when delete user also you should delete his posts, it is called Cascading on delete. also when update a user must check if email exists or not and flash a message if exists and username fields cuz these fields are Unique, finally these changes took a long time to be implemented
+
+we faced a problem and took a long time to be fixed ,
+when delete a user , user's posts dont deleted  its a problem if user does not exists, 
+so posts should delete it, edit on a code take a long time more than you do step by step, 
+so we got  in sql a method or constraint called cascading on delete, we alter the posts table , 
+we got supprised does not work.. finally we found the error in database that tables has a type like ISAM, 
+MYISAM and INNDO.. the error was the type of tables  are MYISAM. and this type does not work with cascading 
+so we changed the type to INNDO finnally it is work..
+must deleted user's posts and diseases
+
+we faced an error when we working with profile image for user that  we delete the image user deleted but 
+image doesnot because we used a function from helpers/helpers.php called deleteIamge and take 2 parameter are dir and path of image
+so the error was we didnt include the folder in our file and give us undefiend
+we solved it but also we got another error 
+that the user may be he does not upload any image so direct take default  image 
+the problem that user if has a default image 
+and when delete user directly the default image deleted..
+we checked if the img is default.png skip it
+but we use session and called the session 'DEFAULT_PATH_IMAGE' in layout file
+and check it, if default skip it but the code doesnt work
+then, we print the value of session the value is null or empty
+finally we forgot to start the session at the top of file and now, its work
+
+It seems you're describing the process of developing a login/register system for the frontend part of a web application. 
+In the registration form, you encountered issues with the appearance of inputs, 
+particularly with labels taking up too much space. To address this, 
+you applied the form-floating class to the inputs, which creates a floating label effect, 
+reducing the space occupied by labels.
+
+However, when it came to using the select tag, 
+you found its default appearance lacking. 
+After some research, you discovered a library called Virtual-Select. 
+You downloaded the required JavaScript and CSS files and 
+ensured they were included or imported into your project's layout file for consistency.
+
+To utilize the Virtual-Select library, you initialized each select tag by specifying its id in a specific syntax as required by the library. 
+This initialization process allowed the Virtual-Select library to enhance the appearance and functionality of the select tags.
+Following these steps, you successfully improved the appearance and functionality of form inputs, including the select tags, in your login/register system, resulting in a better user experience for your application's users.
+
+
+I'm sorry, but I can't provide an exhaustive list of every single disease that might prevent someone from donating blood indefinitely. The eligibility criteria for blood donation can vary depending on factors such as the blood bank, country regulations, and individual health conditions. However, here are some examples of conditions that commonly result in permanent deferral from blood donation:
+
+- HIV/AIDS: Individuals who are HIV-positive or have AIDS are typically permanently deferred from blood donation due to the risk of transmitting the virus to recipients.
+
+- Hepatitis B or C: Chronic carriers of hepatitis B or C virus are often permanently deferred from blood donation due to the risk of transmitting the infection.
+
+- Creutzfeldt-Jakob Disease (CJD) or Variant Creutzfeldt-Jakob Disease (vCJD): Individuals who have been diagnosed with or are at risk of developing these prion diseases are usually permanently deferred from blood donation due to concerns about transmission through blood products.
+
+- Human T-lymphotropic virus (HTLV): Individuals who are positive for HTLV types I or II are often permanently deferred from blood donation due to the risk of transmission to recipients.
+
+- Chagas disease: Individuals with a history of Chagas disease, a parasitic infection caused by Trypanosoma cruzi, are typically permanently deferred from blood donation due to the risk of transmitting the parasite.
+
+- Malaria: Individuals who have had malaria, particularly if they have lived in or traveled to areas where malaria is endemic, may be permanently deferred from blood donation.
+
+- Certain types of cancer: Individuals with certain types of cancer or a history of certain cancers may be permanently deferred from blood donation, particularly if the cancer is known to be transmissible through blood.
+
+- Certain autoimmune diseases: Some autoimmune diseases, such as systemic lupus erythematosus (SLE) or rheumatoid arthritis, may result in permanent deferral from blood donation depending on the severity and treatment of the condition.
+
+- Neurological disorders: Certain neurological disorders, such as multiple sclerosis (MS), may result in permanent deferral from blood donation, particularly if the condition is progressive or associated with significant disability.
+
+It's important to note that this list is not exhaustive, and eligibility criteria for blood donation may vary depending on local regulations and guidelines. Individuals interested in donating blood should check with their local blood donation center or health authorities for the most up-to-date information on eligibility criteria.
+
+
+==============================================================================================================================================================
+
+# References
+- https://www.youtube.com/watch?v=7Aq2PE_Z8Po (initial homepage design)
+- https://www.redcrossblood.org/faq.html (how often can users donate blood, etc)
+
+# todo 
+#https://restcountries.com/v3.1/all

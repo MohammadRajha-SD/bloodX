@@ -88,28 +88,28 @@ function flash($status, $message)
     return NULL;
 }
 
-function isExistsDB($name, $field = 'email', $all = false, $id = 0)
+function isExistsDB($name, $field = 'email', $isSpecific = false, $id = 0)
 {
     global $conn; // Access the global $conn variable
-
     $validFields = ['email', 'username']; // fields needed to check
 
     if (!in_array($field, $validFields)) {
         // Field is not valid, return false
         return false;
     }
-    if ($all) {
+
+    if ($isSpecific) {
         $query = "SELECT COUNT(*) AS users_count FROM users WHERE $field = ? and user_id != $id";
     } else {
         $query = "SELECT COUNT(*) AS users_count FROM users WHERE $field = ?";
     }
+
     $stmt = $conn->prepare($query);
     $stmt->execute([$name]);
     $result = $stmt->fetchColumn();
 
-    return $result > 0 ? flash('error', ucwords($field) . " already exists.") : strtolower($name);
+    return $result > 0;
 }
-
 function old($name)
 {
     if (isset($_SESSION['OLD_DATA'])) {
@@ -119,5 +119,14 @@ function old($name)
         return htmlspecialchars($_SESSION['OLD_DATA'][$name]);
     } else {
         return '';
+    }
+}
+
+function isAdmin($field)
+{
+    if (in_array(strtolower($field), $_SESSION['ADMIN_ARRAY'])) {
+        return true;
+    } else {
+        return false;
     }
 }

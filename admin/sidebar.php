@@ -13,7 +13,9 @@
       <li class="dropdown <?= setActive(['/bt3/bloodX/admin/index.php']); ?> ">
         <a href="<?= LAYOUT_PATH . 'index.php'; ?>" class="nav-link"><i class="fas fa-home"></i><span>Home</span></a>
       </li>
-
+      <li class="dropdown <?= setActive(['/bt3/bloodX/admin/profile/index.php']); ?> ">
+        <a href="<?= LAYOUT_PATH . 'profile/index.php'; ?>" class="nav-link"><i class="fas fa-user"></i><span>Profile</span></a>
+      </li>
       <li class="dropdown <?= setActive([
                             '/bt3/bloodX/admin/donors/',
                             '/bt3/bloodX/admin/donors/index.php',
@@ -51,6 +53,9 @@
           <li><a class="nav-link" href="<?= LAYOUT_PATH . 'donations/index.php'; ?>">Donations</a></li>
           <li><a class="nav-link" href="<?= LAYOUT_PATH . 'requests/index.php'; ?>">Requests</a></li>
         </ul>
+      </li>
+      <li class="dropdown">
+        <a href=" <?= $_SESSION['LAYOUT_PATH_FRONTEND'] . 'auth/logout.php'; ?>" class="nav-link"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
       </li>
     </ul>
   </aside>

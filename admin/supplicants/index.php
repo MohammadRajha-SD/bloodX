@@ -20,12 +20,12 @@ $pages = ceil($counter / $rows_per_page);
 $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
 $start = ($current_page - 1) * $rows_per_page;
 
-$donors_query = 'SELECT users.*, posts.*, blood_groups.*, statuses.*, countries.* FROM users
-    INNER JOIN posts ON users.user_id = posts.user_id
+$supp_query = 'SELECT DISTINCT users.user_id, users.*, blood_groups.*, statuses.*, countries.* FROM users
     INNER JOIN blood_groups ON users.blood_group_id = blood_groups.group_id  
     INNER JOIN statuses ON users.acc_status = statuses.status_id
     INNER JOIN countries ON users.country_id = countries.country_id
-    WHERE posts.post_type = ? LIMIT ?, ?';
+    WHERE users.user_id IN (SELECT user_id FROM posts WHERE post_type = ?)
+    LIMIT ?, ?';
 
 // fetch user's diseases where post type 'request'
 $ds_query = 'SELECT  user_diseases.*, diseases.* FROM users
@@ -35,7 +35,7 @@ $ds_query = 'SELECT  user_diseases.*, diseases.* FROM users
 
 try {
     $count = 0;
-    $stmt = $conn->prepare($donors_query);
+    $stmt = $conn->prepare($supp_query);
     $stmt->execute([$post_type, $start, $rows_per_page]);
     $result = $stmt->fetchAll();
 } catch (PDOException $e) {

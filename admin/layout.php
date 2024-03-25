@@ -6,6 +6,12 @@ $_SESSION['LAYOUT_PATH'] = '/bt3/bloodX/admin/';
 $_SESSION['DEFAULT_IMAGE_PATH'] = 'default.png';
 $_SESSION['POST_TYPES'] = ['donation', 'request'];
 $_SESSION['POST_STATUSES'] = ['pending', 'rejected', 'approved', 'inactive'];
+
+if (!isset($_SESSION['USER']['username']) || !isset($_SESSION['USER']['is_admin']) || $_SESSION['USER']['is_admin'] == 0) {
+  header('Location: ' . $_SESSION['LAYOUT_PATH_FRONTEND'] . 'auth/login.php');
+  exit();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -107,6 +113,7 @@ $_SESSION['POST_STATUSES'] = ['pending', 'rejected', 'approved', 'inactive'];
   <script src="<?= asset('assets/modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js'); ?>"></script>
   <script src="<?= asset('assets/modules/select2/dist/js/select2.full.min.js'); ?>"></script>
   <script src="<?= asset('assets/modules/jquery-selectric/jquery.selectric.min.js'); ?>"></script>
+
   <script src="<?= asset('assets/js/page/modules-toastr.js'); ?>"></script>
 
   <!-- JS Libraies -->
@@ -176,24 +183,7 @@ $_SESSION['POST_STATUSES'] = ['pending', 'rejected', 'approved', 'inactive'];
     });
   </script>
   <?php
-  // Dynamic validation
-  if (isset($_SESSION['toastr']) && is_array($_SESSION['toastr'])) {
-    foreach ($_SESSION['toastr'] as $message) {
-      $status = $message['status'];
-      $msg = $message['message'];
-
-      if ($status === 'success') {
-        echo "<script>toastr.success('$msg');</script>";
-      } elseif ($status === 'error') {
-        echo "<script>toastr.error('$msg');</script>";
-      } elseif ($status === 'warning') {
-        echo "<script>toastr.warning('$msg');</script>";
-      }
-    }
-
-    // Clear the session variable to avoid displaying the message again
-    unset($_SESSION['toastr']);
-  }
+  include 'flash.php';
   ?>
 </body>
 
